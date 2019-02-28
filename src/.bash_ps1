@@ -1,0 +1,45 @@
+#!/bin/bash
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# @author   a-Sansara - https://git.pluie.org/meta-tech/bes-ps1
+# @app      bes-ps1
+# @license  GNU GPL v3
+# @date     2017-10-23 23:30:54 CET
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+if [ -f /usr/share/bes/ps1 ]; then
+
+    function bes.ps1.init() {
+        . /usr/share/bes/ps1
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~ FLAG 0|1 (disable|enable)
+        local  BES_PS1_ACTIVE_DATE=1
+        local   BES_PS1_ACTIVE_CTX=1
+        local  BES_PS1_ACTIVE_NAME=1
+        local  BES_PS1_ACTIVE_PATH=1
+        local   BES_PS1_ACTIVE_GIT=1
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~ OVERLOAD DEFAULT COLORS (CTX is predifined depending on related ENV)
+        local   BES_PS1_COLOR_DATE="255 215  15"
+        local   BES_PS1_COLOR_USER="255 232 160"
+        local   BES_PS1_COLOR_ROOT="237 164 115"
+        local   BES_PS1_COLOR_PATH=" 74 160 198"
+        local   BES_PS1_COLOR_HOST="255 255 255"
+        local    BES_PS1_COLOR_GIT="237 164 115"
+        local BES_PS1_COLOR_SYMBOL="255 195 135"
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # -- INSTANCE COLORS - use for example in dockerfile
+        #~ export BES_PS1_BG=154 99 170
+        #~ export BES_PS1_FG=255 255 255
+        # -- INSTANCE ENVIRONMENT (LOCAL|DEV|INT|PROD)
+        #~ export BES_PS1_CTX=DEV
+        # -- INSTANCE NAME
+        #~ export BES_PS1_NAME=home
+        # -- INSTANCE TYPE (VM|DOCKER|whatyouwant)
+        #~ export BES_PS1_TYPE=DOCKER
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        bes.ps1
+    }
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bes.ps1.init
+fi

@@ -1,0 +1,99 @@
+#!/bin/bash
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# @author   a-Sansara - https://git.pluie.org/meta-tech/bes-color
+# @app      bes-color
+# @license  GNU GPL v3
+# @date     2017-10-23 23:30:54 CET
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function ps1.fg()
+{
+    local -n var=$1
+    var="\033[1;38;2;$2;$3;$4m"
+}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function ps1.bg()
+{
+    local -n var=$1
+    var="\033[1;48;2;$2;$3;$4m"
+}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function ps1.env () {
+    local -n   var=${2:-shenv}
+    local        v=ctx$1
+    local  ctxPROD="174 8 49"
+    local   ctxINT="218 84 0"
+    local   ctxDEV="218 159 0"
+    local ctxLOCAL="122 122 122"
+    if [ -z "${!v}" ]; then
+        v=ctxLOCAL
+        BES_PS1_CTX=LOCAL
+    fi
+    var=${!v}
+}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function ps1.git.branch() {
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function ps1.space()
+{
+    if [ "${ps1: -1}" != " " ]; then
+        if [ "$ps1" != "" ]; then
+            ps1="$ps1 ";
+        fi
+    fi
+}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function bes.ps1() {
+    local Cdate Cctx Cname Cpath Cuser Chost Csymbol Coff shenvtype ps1
+    Coff="\\033[m"
+    if [ -z  "$BES_PS1_BG"   ]; then   BES_PS1_BG="154 99 170"; fi
+    if [ -z  "$BES_PS1_FG"   ]; then   BES_PS1_FG="255 255 255"; fi
+    if [ -z  "$BES_PS1_NAME" ]; then BES_PS1_NAME="home"; fi
+    ps1.env "$BES_PS1_CTX" shenv
+    if [ -z  "$BES_PS1_TYPE" ]; then
+        shenvtype=" $BES_PS1_CTX "
+    else
+        echo "mota"
+        shenvtype=" $BES_PS1_TYPE "
+    fi
+
+    ps1.fg "Cdate"    $BES_PS1_COLOR_DATE
+    ps1.bg "Cnamebg"  $BES_PS1_BG
+    ps1.fg "Cnamefg"  $BES_PS1_FG
+    ps1.bg "Cctx"     $shenv
+    ps1.fg "Cctxfg"   255 255 255
+    ps1.fg "Cpath"    $BES_PS1_COLOR_PATH
+    ps1.fg "Chost"    255 255 255
+    ps1.fg "Csymbol"  $BES_PS1_COLOR_SYMBOL
+    if [ "$USER" != "root" ]; then
+        ps1.fg "Cuser"    $BES_PS1_COLOR_USER
+    else
+        ps1.fg "Cuser"    $BES_PS1_COLOR_ROOT
+    fi
+    ps1.fg "Cgit"    $BES_PS1_COLOR_GIT
+
+    ps1=""
+    if [ "$BES_PS1_ACTIVE_DATE" = "1" ]; then
+        ps1="$ps1\[${Cdate}\]\t "
+    fi
+    if [ "$BES_PS1_ACTIVE_CTX" = "1" ]; then
+        ps1="$ps1\[${Cctxfg}\]\[${Cctx}\]${shenvtype}\[${Coff}\]"
+    fi
+    if [ "$BES_PS1_ACTIVE_NAME" = "1" ]; then
+        ps1="$ps1\[${Cnamebg}\] \[${Cnamefg}\]${BES_PS1_NAME} \[${Coff}\]"
+    fi
+    ps1.space
+    ps1="$ps1\[${Cuser}\]\u\[${Chost}\]@\h"
+    if [ "$BES_PS1_ACTIVE_PATH" = "1" ]; then
+        ps1.space
+        ps1="$ps1\[${Cpath}\]\w"
+    fi
+    if [ "$BES_PS1_ACTIVE_GIT" = "1" ]; then
+        ps1="$ps1\[${Cgit}\]\$(ps1.git.branch)"
+    fi
+    ps1="$ps1 \[${Csymbol}\]\$ \[${Coff}\]"
+    export PS1="$ps1"
+}
