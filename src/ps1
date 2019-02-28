@@ -56,7 +56,6 @@ function bes.ps1() {
     if [ -z  "$BES_PS1_TYPE" ]; then
         shenvtype=" $BES_PS1_CTX "
     else
-        echo "mota"
         shenvtype=" $BES_PS1_TYPE "
     fi
 
